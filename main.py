@@ -48,20 +48,6 @@ def on_release(key):
         key_press = key.vk
     except AttributeError:
         key_press = key.value.vk
-
-    # idk if this is a bug but if you press and hold a valid key combination and proceed
-    # to press another valid key again while the old one is still active, it would store
-    # both valid keys, so when you release the old one, it would store the new one now,
-    # and when you released the new one, it would print the combination released message
-    # for the new one.
-    
-    # CRTL + SHIFT + A
-    # CRTL + SHIFT + A + B
-    # CRTL + SHIFT + B (wont output the message for A because it treat it as appended)
-    # CRTL + SHIFT (this would output the message for B)
-    
-    # this would also work with the non valid keys, but instead it wont output anything.
-
       
     for i in range(len(com)):
         if current_keys_pressed == com[i]:
