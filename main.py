@@ -1,48 +1,26 @@
 # check if pynput is installed
-def check_package():
-    try:
-        from pynput import keyboard
-    except:
-        user_input = input('package pynput not found, do you want to install it? (Y/n)').lower()
+try:
+    from pynput import keyboard
+except:
+    user_input = input('package pynput not found, do you want to install it? (Y/n)').lower()
         
-        if user_input == "y" or len(user_input) == 0:
-            import setup
-        else:
-            print("operation canceled")
-            exit()
+    if user_input == "y" or len(user_input) == 0:
+        import setup
+    else:
+        print("operation canceled")
+        exit()
 
 import platform
 from pynput import keyboard
 
 com = [[162, 160, 65], [162, 160, 66], [162, 160, 67]]
-current = []
-
-def is_combination_pressed(key_press, combination):
-    global current
-
-    if key_press in combination and key_press not in current:
-        current.append(key_press)
-        # if the current combination is the same as com
-        if current == combination:
-            return True
-    return False
-
-def is_combination_released(key_press, combination):
-    global current
-    if key_press in current:
-        current.remove(key_press)
-        return False
-    elif current == combination:
-        return True
-
-    # if key_press in combination:
-    #     if current == combination:
-    #         return True
-    #     if key_press in current:
-    #         current.remove(key_press)
-    return False
+current_keys_pressed = []
+pressed = False
 
 def on_press(key):
+    global current_keys_pressed
+    global pressed
+
     if key == keyboard.Key.esc:
         return False
     
@@ -53,46 +31,47 @@ def on_press(key):
         # for special keys
         key_press = key.value.vk
 
-    # check if key is in com and not an duplicate
-    # if key_press in com[0] and key_press not in current:
-    #     current.append(key_press)
-    #     # if the current combination is the same as com
-    #     if current == com[0]:
-    #         print("combinations pressed 1")
-    # elif key_press in com[1] and key_press not in current:
-    #     current.append(key_press)
-    #     if current == com[1]:
-    #         print("combinations pressed 2")
-
+    if key_press not in current_keys_pressed:
+        current_keys_pressed.append(key_press)
+        
     for i in range(len(com)):
-        print(current)
-        if is_combination_pressed(key_press, com[i]):
+        if current_keys_pressed == com[i] and not pressed:
             print("combinations pressed", i + 1)
+            pressed = True
             break
 
 def on_release(key):
+    global current_keys_pressed
+    global pressed
+    
     try:
         key_press = key.vk
     except AttributeError:
         key_press = key.value.vk
 
+    # idk if this is a bug but if you press and hold a valid key combination and proceed
+    # to press another valid key again while the old one is still active, it would store
+    # both valid keys, so when you release the old one, it would store the new one now,
+    # and when you released the new one, it would print the combination released message
+    # for the new one.
+    
+    # CRTL + SHIFT + A
+    # CRTL + SHIFT + A + B
+    # CRTL + SHIFT + B (wont output the message for A because it treat it as appended)
+    # CRTL + SHIFT (this would output the message for B)
+    
+    # this would also work with the non valid keys, but instead it wont output anything.
+
+      
     for i in range(len(com)):
-        if is_combination_released(key_press, com[i]):
+        if current_keys_pressed == com[i]:
             print("combinations released", i + 1)
+            pressed = False
             break
 
-    # if key_press in com[0]:
-    #     if current == com[0]:
-    #         print("combinations released 1")
-    #     current.remove(key_press)
-
-    # elif key_press in com[1]:
-    #     if current == com[1]:
-    #         print("combinations released 2")
-    #     current.remove(key_press)
+    if key_press in current_keys_pressed:
+        current_keys_pressed.remove(key_press)
+    
 
 with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
     listener.join()
-
-if __name__ == "__main__":
-    check_package()
