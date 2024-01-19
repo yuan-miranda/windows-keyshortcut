@@ -13,9 +13,15 @@ except:
 import platform
 from pynput import keyboard
 
-com = [[162, 160, 65], [162, 160, 66], [162, 160, 67]]
+user_system = platform.system()
+com = []
 current_keys_pressed = []
 pressed = False
+
+if user_system == "Windows":
+	com = [[162, 160, 65], [162, 160, 66], [162, 160, 67]]
+elif user_system == "Linux":
+	com = [[65507, 65505, 65], [65507, 65505, 66], [65507, 65505, 67]]
 
 def on_press(key):
     global current_keys_pressed
