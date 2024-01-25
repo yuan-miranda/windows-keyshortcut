@@ -10,6 +10,7 @@ except:
         print("operation canceled")
         exit()
 
+
 import platform
 import os
 from pynput import keyboard
@@ -19,6 +20,7 @@ com = []
 current_keys_pressed = []
 pressed = False
 
+# add your own shortcuts and commands here
 if user_system == "Windows":
     com = {
         (162, 164, 84): "cmd",
@@ -55,15 +57,6 @@ def on_press(key):
 
             pressed = True
             break
-        
-    # if key_press not in current_keys_pressed:
-    #     current_keys_pressed.append(key_press)
-        
-    # for i in range(len(com)):
-    #     if current_keys_pressed == com[i] and not pressed:
-    #         print("combinations pressed", i + 1)
-    #         pressed = True
-    #         break
 
 def on_release(key):
     global current_keys_pressed
@@ -85,16 +78,6 @@ def on_release(key):
     
     if key_press in current_keys_pressed:
         current_keys_pressed.remove(key_press)
-
-    # for i in range(len(com)):
-    #     if current_keys_pressed == com[i]:
-    #         print("combinations released", i + 1)
-    #         pressed = False
-    #         break
-
-    # if key_press in current_keys_pressed:
-    #     current_keys_pressed.remove(key_press)
-    
 
 with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
     listener.join()

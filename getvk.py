@@ -1,3 +1,17 @@
+# check if pynput is installed
+try:
+    from pynput import keyboard
+except:
+    user_input = input('package pynput not found, do you want to install it? (Y/n)').lower()
+        
+    if user_input == "y" or len(user_input) == 0:
+        import setup
+    else:
+        print("operation canceled")
+        exit()
+
+
+
 from pynput import keyboard
 
 # gets the virtual key of a key
