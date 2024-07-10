@@ -1,3 +1,5 @@
+# this script runs in the background and listens for keyboard inputs.
+
 import os
 import pynput
 
